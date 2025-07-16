@@ -1,9 +1,9 @@
 import express from "express";
-import { testUser } from "../Controller/test.js";
+import filmRouter from "../Router/filmrouter/filmRouter.js";
 
 const Router = express();
-const api = "api/v1";
+const api = "/api";
 
-Router.get("/test", testUser);
+Router.use(api, filmRouter);
 
 export default Router;
