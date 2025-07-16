@@ -44,4 +44,5 @@ const PemesananModel = new mongoose.Schema(
   { timestamps: true }
 );
 
-export default mongoose.model("PemesananModel", PemesananModel);
+// harus sesuai dengan nama collection (tulis nama collection tanpa s)
+export default mongoose.model("pemesanan", PemesananModel);
