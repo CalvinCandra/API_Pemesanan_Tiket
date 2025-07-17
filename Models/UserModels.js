@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
+import bcrypt from "bcryptjs";
 
-const UserModels = new mongoose.Schema(
+const UserSchema = new mongoose.Schema(
   {
     nama_user: { type: String, required: true },
     email_user: { type: String, required: true, unique: true },
@@ -20,5 +21,16 @@ const UserModels = new mongoose.Schema(
   { timestamps: true }
 );
 
-// harus sesuai dengan nama collection (tulis nama collection tanpa s)
-export default mongoose.model("user", UserModels);
+// Hash password sebelum disimpan
+UserSchema.pre("save", async function (next) {
+  if (!this.isModified("password")) return next();
+  this.password = await bcrypt.hash(this.password, 10);
+  next();
+});
+
+// Method untuk membandingkan password
+UserSchema.methods.comparePassword = async function (password) {
+  return await bcrypt.compare(password, this.password);
+};
+
+export default mongoose.model("user", UserSchema);
