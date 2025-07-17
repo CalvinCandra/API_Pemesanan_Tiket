@@ -1,7 +1,6 @@
 import User from "../../Models/UserModels.js";
 import jwt from "jsonwebtoken";
 
-// @desc    Register a new user
 // @route   POST /api/auth/register
 export const register = async (req, res) => {
   const { nama_user, email_user, jenis_kelamin, password, role } = req.body;
@@ -17,11 +16,7 @@ export const register = async (req, res) => {
       email_user,
       jenis_kelamin,
       password,
-      role,
-    });
-
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: "30d",
+      role: "User",
     });
 
     res.status(201).json({
@@ -31,14 +26,12 @@ export const register = async (req, res) => {
       jenis_kelamin: user.jenis_kelamin,
       //   password: user.password,
       role: user.role,
-      token,
     });
   } catch (error) {
     res.status(500).json({ message: "Server Error" });
   }
 };
 
-// @desc    Login user
 // @route   POST /api/auth/login
 export const login = async (req, res) => {
   const { email_user, password } = req.body;
