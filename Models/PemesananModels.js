@@ -3,46 +3,32 @@ import mongoose from "mongoose";
 const PemesananModel = new mongoose.Schema(
   {
     user: {
-      user_id: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "UserModles",
-        required: true,
-      },
-      nama_user: String,
-      jenis_kelamin: String,
-      email: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "user", // nama model user yang Anda export
+      required: true,
     },
     film: {
-      film_id: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "FilmModels",
-        required: true,
-      },
-      nama_film: String,
-      genre: String,
-      durasi: Number,
-      sutadara_film: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "film",
+      required: true,
     },
     studio: {
-      studio_id: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "StudioModels",
-        required: true,
-      },
-      nama_tempat: String,
-      studio_ke: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "studio",
+      required: true,
     },
     tanggal_pesan: {
       type: Date,
       default: () => {
         const now = new Date();
-        return now.toISOString().split("T")[0]; // hanya 'YYYY-MM-DD'
+        return now.toISOString().split("T")[0];
       },
     },
     jumlah_pesan: { type: Number, required: true },
   },
   { timestamps: true }
 );
+
 
 // harus sesuai dengan nama collection (tulis nama collection tanpa s)
 export default mongoose.model("pemesanan", PemesananModel);
