@@ -1,13 +1,14 @@
 import express from "express";
-import { protect, admin } from '../../Middleware/jwt.js';
-import { createPemesanan, getAllPemesanan, deletePemesanan } from "../../Controller/tiketcontroller/tiketController.js";
-
-
+import {
+  createPemesanan,
+  getAllPemesanan,
+  deletePemesanan,
+} from "../../Controller/tiketcontroller/tiketController.js";
 
 const router = express.Router();
 
 // POST /api/transactions
-router.post("/", protect, createPemesanan); // buat pemesanan
-router.get('/', protect, getAllPemesanan); // ambil semua data
-router.delete('/:id', protect, deletePemesanan); // hapus berdasarkan id
+router.post("/pesanTiket", createPemesanan);
+router.get("/cekTiket", getAllPemesanan);
+router.delete("/hapusTiket/:id", deletePemesanan);
 export default router;

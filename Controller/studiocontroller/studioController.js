@@ -4,7 +4,7 @@ import mongoose from "mongoose";
 export const CreateStudio = async (req, res) => {
   try {
     const { nama_tempat, studio_ke } = req.body;
-    
+
     // Validasi
     if (!nama_tempat) {
       return res.status(400).json({ message: "Nama Tempat Harus Diisi" });
@@ -15,17 +15,17 @@ export const CreateStudio = async (req, res) => {
 
     const newStudio = new Studio({
       nama_tempat,
-      studio_ke
+      studio_ke,
     });
-    
+
     await newStudio.save();
-    
+
     // Kirim response
     res.status(200).json(newStudio);
   } catch (error) {
-    res.status(500).json({ 
-      message: "Terjadi error saat menambah data Studio", 
-      error: error.message 
+    res.status(500).json({
+      message: "Terjadi error saat menambah data Studio",
+      error: error.message,
     });
   }
 };
@@ -35,9 +35,9 @@ export const ReadStudio = async (req, res) => {
     const studios = await Studio.find().sort({ createdAt: -1 });
     res.status(200).json(studios);
   } catch (error) {
-    res.status(500).json({ 
-      message: "Terjadi error saat mengambil data Studio", 
-      error: error.message 
+    res.status(500).json({
+      message: "Terjadi error saat mengambil data Studio",
+      error: error.message,
     });
   }
 };
@@ -45,23 +45,23 @@ export const ReadStudio = async (req, res) => {
 export const ReadStudiobyid = async (req, res) => {
   try {
     const { id } = req.params;
-    
+
     // Cek format ID valid atau tidak
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).json({ message: "ID tidak valid" });
     }
 
     const studio = await Studio.findById(id);
-    
+
     if (!studio) {
       return res.status(404).json({ message: "Studio tidak ditemukan" });
     }
-    
+
     res.status(200).json(studio);
   } catch (error) {
-    res.status(500).json({ 
-      message: "Terjadi error saat mengambil data Studio", 
-      error: error.message 
+    res.status(500).json({
+      message: "Terjadi error saat mengambil data Studio",
+      error: error.message,
     });
   }
 };
@@ -69,7 +69,7 @@ export const ReadStudiobyid = async (req, res) => {
 export const UpdateStudio = async (req, res) => {
   try {
     const { id } = req.params;
-    
+
     // Cek format ID valid atau tidak
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).json({ message: "ID tidak valid" });
@@ -86,14 +86,12 @@ export const UpdateStudio = async (req, res) => {
     // Buat object update dengan data baru atau gunakan data lama jika tidak ada
     const updateData = {
       nama_tempat: nama_tempat || existingStudio.nama_tempat,
-      studio_ke: studio_ke || existingStudio.studio_ke
+      studio_ke: studio_ke || existingStudio.studio_ke,
     };
 
-    const updatedStudio = await Studio.findByIdAndUpdate(
-      id,
-      updateData,
-      { new: true }
-    );
+    const updatedStudio = await Studio.findByIdAndUpdate(id, updateData, {
+      new: true,
+    });
 
     res.status(200).json(updatedStudio);
   } catch (error) {
@@ -107,7 +105,7 @@ export const UpdateStudio = async (req, res) => {
 export const DeleteStudio = async (req, res) => {
   try {
     const { id } = req.params;
-    
+
     // Cek format ID valid atau tidak
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).json({ message: "ID tidak valid" });
@@ -124,6 +122,36 @@ export const DeleteStudio = async (req, res) => {
   } catch (error) {
     res.status(500).json({
       message: "Terjadi error saat hapus data Studio",
+      error: error.message,
+    });
+  }
+};
+
+// Search berdasarkan nama dan studio-ke
+export const SearchStudio = async (req, res) => {
+  try {
+    const { nama_studio, studio_ke } = req.body;
+
+    let filter = {};
+
+    if (nama_studio) {
+      filter.nama_studio = { $regex: nama_studio, $options: "i" }; // i = case-insensitive
+    }
+
+    if (studio_ke) {
+      filter.studio_ke = { $regex: studio_ke, $options: "i" };
+    }
+
+    const hasil = await film.find(filter);
+
+    if (hasil.length === 0) {
+      return res.status(404).json({ message: "Studio tidak ditemukan" });
+    }
+
+    res.status(200).json(hasil);
+  } catch (error) {
+    res.status(500).json({
+      message: "Terjadi kesalahan saat mencari studio",
       error: error.message,
     });
   }

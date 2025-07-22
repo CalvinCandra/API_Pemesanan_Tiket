@@ -146,3 +146,103 @@ export const DeleteFilm = async (req, res) => {
     });
   }
 };
+
+export const ReadFilm = async (req, res) => {
+  try {
+    const Film = await film.find().sort({ createdAt: -1 });
+    res.status(200).json(studios);
+  } catch (error) {
+    res.status(500).json({
+      message: "Terjadi error saat mengambil data Studio",
+      error: error.message,
+    });
+  }
+};
+
+// serch berdasarkan id
+export const ReadFilmbyid = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Cek format ID valid atau tidak
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: "ID tidak valid" });
+    }
+
+    const Film = await film.findById(id);
+
+    if (!Film) {
+      return res.status(404).json({ message: "Film tidak ditemukan" });
+    }
+
+    res.status(200).json(Film);
+  } catch (error) {
+    res.status(500).json({
+      message: "Terjadi error saat mengambil data Film",
+      error: error.message,
+    });
+  }
+};
+
+// Search berdasarkan nama dan genre
+export const SearchFilm = async (req, res) => {
+  try {
+    const { nama_film, genre_film } = req.body;
+
+    let filter = {};
+
+    if (nama_film) {
+      filter.nama_film = { $regex: nama_film, $options: "i" }; // i = case-insensitive
+    }
+
+    if (genre_film) {
+      filter.genre_film = { $regex: genre_film, $options: "i" };
+    }
+
+    const hasil = await film.find(filter);
+
+    if (hasil.length === 0) {
+      return res.status(404).json({ message: "Film tidak ditemukan" });
+    }
+
+    res.status(200).json(hasil);
+  } catch (error) {
+    res.status(500).json({
+      message: "Terjadi kesalahan saat mencari film",
+      error: error.message,
+    });
+  }
+};
+
+// Seacrh berdasarkan genre dan menghitung (Group)
+export const CountbyGenre = async (req, res) => {
+  try {
+    const { genre } = req.body;
+
+    if (!genre) {
+      return res
+        .status(400)
+        .json({ message: "Genre harus diisi di body request" });
+    }
+
+    const result = await film.aggregate([
+      {
+        $match: {
+          genre_film: { $regex: genre, $options: "i" }, // case-insensitive
+        },
+      },
+      {
+        $count: "jumlah_film",
+      },
+    ]);
+
+    const jumlah = result[0]?.jumlah_film || 0;
+
+    res.status(200).json({ genre, jumlah });
+  } catch (error) {
+    res.status(500).json({
+      message: "Gagal menghitung jumlah film berdasarkan genre",
+      error: error.message,
+    });
+  }
+};
