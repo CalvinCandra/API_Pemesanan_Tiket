@@ -150,10 +150,10 @@ export const DeleteFilm = async (req, res) => {
 export const ReadFilm = async (req, res) => {
   try {
     const Film = await film.find().sort({ createdAt: -1 });
-    res.status(200).json(studios);
+    res.status(200).json(Film);
   } catch (error) {
     res.status(500).json({
-      message: "Terjadi error saat mengambil data Studio",
+      message: "Terjadi error saat mengambil data film",
       error: error.message,
     });
   }
