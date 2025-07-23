@@ -8,8 +8,8 @@ import { protect, admin } from "../Middleware/jwt.js";
 const Router = express();
 const api = "/api";
 
-Router.use(api + "/film", [protect, admin], filmRouter);
-Router.use(api + "/studio", [protect, admin], studioRouter);
+Router.use(api + "/film", filmRouter);
+Router.use(api + "/studio", studioRouter);
 Router.use(api + "/auth", authRouter);
 
 //pemesanan tiket

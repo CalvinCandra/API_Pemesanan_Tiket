@@ -1,7 +1,7 @@
 //tambahkan pesanan dengan parameter id_film, id_studio
 import Pemesanan from "../../Models/PemesananModels.js";
-import User from "../../Models/UserModel.js";
-import Film from "../../Models/FilmModel.js";
+import User from "../../Models/UserModels.js";
+import Film from "../../Models/FilmModels.js";
 import Studio from "../../Models/StudioModel.js";
 
 // Buat pesanan dengan tambahan data dari id user, id film, dan id studio

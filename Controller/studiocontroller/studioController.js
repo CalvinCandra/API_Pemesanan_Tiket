@@ -130,12 +130,12 @@ export const DeleteStudio = async (req, res) => {
 // Search berdasarkan nama dan studio-ke
 export const SearchStudio = async (req, res) => {
   try {
-    const { nama_studio, studio_ke } = req.body;
+    const { nama_tempat, studio_ke } = req.body;
 
     let filter = {};
 
-    if (nama_studio) {
-      filter.nama_studio = { $regex: nama_studio, $options: "i" }; // i = case-insensitive
+    if (nama_tempat) {
+      filter.nama_tempat = { $regex: nama_tempat, $options: "i" }; // i = case-insensitive
     }
 
     if (studio_ke) {
@@ -152,6 +152,102 @@ export const SearchStudio = async (req, res) => {
   } catch (error) {
     res.status(500).json({
       message: "Terjadi kesalahan saat mencari studio",
+      error: error.message,
+    });
+  }
+};
+
+// Search studio by name and studio number
+export const SearchStudios = async (req, res) => {
+  try {
+    const { nama_tempat, studio_ke } = req.body;
+
+    let filter = {};
+
+    if (nama_tempat) {
+      filter.nama_tempat = { $regex: nama_tempat, $options: "i" }; // i = case-insensitive
+    }
+
+    if (studio_ke) {
+      filter.studio_ke = studio_ke; // Exact match for studio number
+    }
+
+    const hasil = await Studio.find(filter);
+
+    if (hasil.length === 0) {
+      return res.status(404).json({ message: "Studio tidak ditemukan" });
+    }
+
+    res.status(200).json(hasil);
+  } catch (error) {
+    res.status(500).json({
+      message: "Terjadi kesalahan saat mencari studio",
+      error: error.message,
+    });
+  }
+};
+
+// Count studios by name (Group)
+export const CountbyStudioName = async (req, res) => {
+  try {
+    const { nama_tempat } = req.body;
+
+    if (!nama_tempat) {
+      return res
+        .status(400)
+        .json({ message: "Nama tempat harus diisi di body request" });
+    }
+
+    const result = await Studio.aggregate([
+      {
+        $match: {
+          nama_tempat: { $regex: nama_tempat, $options: "i" }, // case-insensitive
+        },
+      },
+      {
+        $count: "jumlah_studio",
+      },
+    ]);
+
+    const jumlah = result[0]?.jumlah_studio || 0;
+
+    res.status(200).json({ nama_tempat, jumlah });
+  } catch (error) {
+    res.status(500).json({
+      message: "Gagal menghitung jumlah studio berdasarkan nama tempat",
+      error: error.message,
+    });
+  }
+};
+
+export const SearchAndCountByStudioNumber = async (req, res) => {
+  try {
+    const { studio_ke } = req.body;
+
+    if (!studio_ke) {
+      return res.status(400).json({ message: "Nomor studio harus diisi" });
+    }
+
+    // Search for studios with the given number
+    const studios = await Studio.find({ studio_ke: studio_ke });
+
+    if (studios.length === 0) {
+      return res.status(404).json({ 
+        message: `Tidak ditemukan studio dengan nomor ${studio_ke}` 
+      });
+    }
+
+    // Count how many studios have this number
+    const count = studios.length;
+
+    res.status(200).json({
+      studio_ke,
+      jumlah_studio: count,
+      data: studios
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Terjadi kesalahan saat mencari studio berdasarkan nomor",
       error: error.message,
     });
   }
