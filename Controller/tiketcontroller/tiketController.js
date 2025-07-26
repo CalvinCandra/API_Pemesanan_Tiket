@@ -1,16 +1,15 @@
-//tambahkan pesanan dengan parameter id_film, id_studio
+
 import Pemesanan from "../../Models/PemesananModels.js";
 import User from "../../Models/UserModels.js";
 import Film from "../../Models/FilmModels.js";
 import Studio from "../../Models/StudioModel.js";
 
-// Buat pesanan dengan tambahan data dari id user, id film, dan id studio
+
 export const createPemesanan = async (req, res) => {
   try {
     const { film, studio, jumlah_pesan } = req.body;
-    const userId = req.user._id; // dari middleware protect
+    const userId = req.user._id; 
 
-    // Validasi semua ID ada
     const userData = await User.findById(userId).select(
       "nama_user email_user jenis_kelamin"
     );
@@ -55,10 +54,12 @@ export const createPemesanan = async (req, res) => {
   }
 };
 
-//get all pesanan
 export const getAllPemesanan = async (req, res) => {
   try {
-    const data = await Pemesanan.find()
+    
+    const userId = req.user.id;
+
+    const data = await Pemesanan.find({ user: userId })
       .populate("user", "nama_user email_user jenis_kelamin")
       .populate("film", "nama_film genre_film durasi_film sutadara_film")
       .populate("studio", "nama_tempat studio_ke");
@@ -72,7 +73,8 @@ export const getAllPemesanan = async (req, res) => {
   }
 };
 
-//hapus pesananan berdasarkan id pesanan
+
+
 export const deletePemesanan = async (req, res) => {
   const { id } = req.params;
 

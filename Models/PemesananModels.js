@@ -4,7 +4,7 @@ const PemesananModel = new mongoose.Schema(
   {
     user: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "user", // nama model user yang Anda export
+      ref: "user", 
       required: true,
     },
     film: {

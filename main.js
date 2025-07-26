@@ -4,7 +4,6 @@ import dotenv from "dotenv";
 import { koneksi } from "./Database/database.js";
 import Router from "./Router/index.js";
 
-// init .env
 dotenv.config();
 
 const app = express();
@@ -14,7 +13,7 @@ app.use(express.json());
 app.use(Router);
 
 app.use((err, req, res, next) => {
-  console.error("🔥 Error Stack:", err.stack); // <-- Log detail error
+  console.error("🔥 Error Stack:", err.stack); 
   res.status(500).json({
     error: err.message || "Internal Server Error",
   });

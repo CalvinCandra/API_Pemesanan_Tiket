@@ -7,7 +7,6 @@ dotenv.config();
 // Inisialisasi koneksi Mongoose
 let dbConnection;
 
-// Fungsi koneksi yang sudah diadaptasi untuk Mongoose
 async function koneksi() {
   try {
     if (!process.env.MONGODB_URI) {

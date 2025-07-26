@@ -8,5 +8,5 @@ const StudioModels = new mongoose.Schema(
   { timestamps: true }
 );
 
-// harus sesuai dengan nama collection (tulis nama collection tanpa s)
 export default mongoose.model("studio", StudioModels);
+ 

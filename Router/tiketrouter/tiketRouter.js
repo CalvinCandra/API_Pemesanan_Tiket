@@ -7,7 +7,7 @@ import {
 
 const router = express.Router();
 
-// POST /api/transactions
+
 router.post("/pesanTiket", createPemesanan);
 router.get("/cekTiket", getAllPemesanan);
 router.delete("/hapusTiket/:id", deletePemesanan);
