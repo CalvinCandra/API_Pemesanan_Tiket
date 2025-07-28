@@ -10,7 +10,7 @@ export const CreateFilm = async (req, res) => {
       durasi_menit_film,
       sutadara_film,
     } = req.body;
-    // validasi
+
     if (!nama_film) {
       return res.status(400).json({ message: "Nama Film Harus Diisi" });
     }
@@ -37,7 +37,6 @@ export const CreateFilm = async (req, res) => {
       return res.status(400).json({ message: "Sutadara Film Harus Diisi" });
     }
 
-    // gabungan durasi
     const durasi_film = `${durasi_jam_film} Jam ${durasi_menit_film} Menit`;
 
     const newFilm = new film({
@@ -47,7 +46,6 @@ export const CreateFilm = async (req, res) => {
       sutadara_film,
     });
     await newFilm.save();
-    // kirim response
     res.status(200).json(newFilm);
   } catch (error) {
     res
@@ -59,7 +57,7 @@ export const CreateFilm = async (req, res) => {
 export const UpdateFilm = async (req, res) => {
   try {
     const { id } = req.params;
-    // Cek format ID valid atau tidak
+
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).json({ message: "ID tidak valid" });
     }
@@ -72,13 +70,13 @@ export const UpdateFilm = async (req, res) => {
       sutadara_film,
     } = req.body;
 
-    // cek apakah data ada atau tidak
+
     const dataFilm = await film.findOne({ _id: id });
     if (!dataFilm) {
       return res.status(400).json({ message: "Film Tidak Ditemukan" });
     }
 
-    // validasi
+
     if (!nama_film) {
       return res.status(400).json({ message: "Nama Film Harus Diisi" });
     }
@@ -105,7 +103,6 @@ export const UpdateFilm = async (req, res) => {
       return res.status(400).json({ message: "Sutadara Film Harus Diisi" });
     }
 
-    // gabungan durasi
     const durasi_film = `${durasi_jam_film} Jam ${durasi_menit_film} Menit`;
 
     const UpdateFilm = await film.findByIdAndUpdate(
@@ -126,12 +123,11 @@ export const UpdateFilm = async (req, res) => {
 export const DeleteFilm = async (req, res) => {
   try {
     const { id } = req.params;
-    // Cek format ID valid atau tidak
+
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).json({ message: "ID tidak valid" });
     }
 
-    // cek apakah data ada atau tidak
     const dataFilm = await film.findOne({ _id: id });
     if (!dataFilm) {
       return res.status(400).json({ message: "Film Tidak Ditemukan" });
@@ -159,12 +155,11 @@ export const ReadFilm = async (req, res) => {
   }
 };
 
-// serch berdasarkan id
+
 export const ReadFilmbyid = async (req, res) => {
   try {
     const { id } = req.params;
 
-    // Cek format ID valid atau tidak
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).json({ message: "ID tidak valid" });
     }
@@ -184,7 +179,6 @@ export const ReadFilmbyid = async (req, res) => {
   }
 };
 
-// Search berdasarkan nama dan genre
 export const SearchFilm = async (req, res) => {
   try {
     const { nama_film, genre_film } = req.body;
@@ -192,7 +186,7 @@ export const SearchFilm = async (req, res) => {
     let filter = {};
 
     if (nama_film) {
-      filter.nama_film = { $regex: nama_film, $options: "i" }; // i = case-insensitive
+      filter.nama_film = { $regex: nama_film, $options: "i" }; 
     }
 
     if (genre_film) {
@@ -214,7 +208,6 @@ export const SearchFilm = async (req, res) => {
   }
 };
 
-// Seacrh berdasarkan genre dan menghitung (Group)
 export const CountbyGenre = async (req, res) => {
   try {
     const { genre } = req.body;
@@ -228,7 +221,7 @@ export const CountbyGenre = async (req, res) => {
     const result = await film.aggregate([
       {
         $match: {
-          genre_film: { $regex: genre, $options: "i" }, // case-insensitive
+          genre_film: { $regex: genre, $options: "i" }, 
         },
       },
       {

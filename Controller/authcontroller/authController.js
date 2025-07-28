@@ -1,7 +1,6 @@
 import User from "../../Models/UserModels.js";
 import jwt from "jsonwebtoken";
 
-// @route   POST /api/auth/register
 export const register = async (req, res) => {
   const { nama_user, email_user, jenis_kelamin, password, role } = req.body;
 
@@ -11,7 +10,7 @@ export const register = async (req, res) => {
       return res.status(400).json({ message: "Email sudah terdaftar" });
     }
 
-    const user = await User.create({
+    const user = await User.create({ 
       nama_user,
       email_user,
       jenis_kelamin,
@@ -24,7 +23,6 @@ export const register = async (req, res) => {
       nama_user: user.nama_user,
       email_user: user.email_user,
       jenis_kelamin: user.jenis_kelamin,
-      //   password: user.password,
       role: user.role,
     });
   } catch (error) {
@@ -32,7 +30,7 @@ export const register = async (req, res) => {
   }
 };
 
-// @route   POST /api/auth/login
+
 export const login = async (req, res) => {
   const { email_user, password } = req.body;
 

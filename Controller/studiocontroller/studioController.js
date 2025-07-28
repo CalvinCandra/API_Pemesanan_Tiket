@@ -5,7 +5,6 @@ export const CreateStudio = async (req, res) => {
   try {
     const { nama_tempat, studio_ke } = req.body;
 
-    // Validasi
     if (!nama_tempat) {
       return res.status(400).json({ message: "Nama Tempat Harus Diisi" });
     }
@@ -20,7 +19,6 @@ export const CreateStudio = async (req, res) => {
 
     await newStudio.save();
 
-    // Kirim response
     res.status(200).json(newStudio);
   } catch (error) {
     res.status(500).json({
@@ -46,7 +44,6 @@ export const ReadStudiobyid = async (req, res) => {
   try {
     const { id } = req.params;
 
-    // Cek format ID valid atau tidak
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).json({ message: "ID tidak valid" });
     }
@@ -70,20 +67,17 @@ export const UpdateStudio = async (req, res) => {
   try {
     const { id } = req.params;
 
-    // Cek format ID valid atau tidak
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).json({ message: "ID tidak valid" });
     }
 
     const { nama_tempat, studio_ke } = req.body;
 
-    // Cek apakah data ada atau tidak
     const existingStudio = await Studio.findOne({ _id: id });
     if (!existingStudio) {
       return res.status(404).json({ message: "Studio Tidak Ditemukan" });
     }
 
-    // Buat object update dengan data baru atau gunakan data lama jika tidak ada
     const updateData = {
       nama_tempat: nama_tempat || existingStudio.nama_tempat,
       studio_ke: studio_ke || existingStudio.studio_ke,
@@ -106,12 +100,10 @@ export const DeleteStudio = async (req, res) => {
   try {
     const { id } = req.params;
 
-    // Cek format ID valid atau tidak
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).json({ message: "ID tidak valid" });
     }
 
-    // Cek apakah data ada atau tidak
     const existingStudio = await Studio.findOne({ _id: id });
     if (!existingStudio) {
       return res.status(404).json({ message: "Studio Tidak Ditemukan" });
@@ -127,7 +119,6 @@ export const DeleteStudio = async (req, res) => {
   }
 };
 
-// Search berdasarkan nama dan studio-ke
 export const SearchStudio = async (req, res) => {
   try {
     const { nama_tempat, studio_ke } = req.body;
@@ -135,7 +126,7 @@ export const SearchStudio = async (req, res) => {
     let filter = {};
 
     if (nama_tempat) {
-      filter.nama_tempat = { $regex: nama_tempat, $options: "i" }; // i = case-insensitive
+      filter.nama_tempat = { $regex: nama_tempat, $options: "i" }; 
     }
 
     if (studio_ke) {
@@ -157,7 +148,7 @@ export const SearchStudio = async (req, res) => {
   }
 };
 
-// Search studio by name and studio number
+
 export const SearchStudios = async (req, res) => {
   try {
     const { nama_tempat, studio_ke } = req.body;
@@ -165,11 +156,11 @@ export const SearchStudios = async (req, res) => {
     let filter = {};
 
     if (nama_tempat) {
-      filter.nama_tempat = { $regex: nama_tempat, $options: "i" }; // i = case-insensitive
+      filter.nama_tempat = { $regex: nama_tempat, $options: "i" }; 
     }
 
     if (studio_ke) {
-      filter.studio_ke = studio_ke; // Exact match for studio number
+      filter.studio_ke = studio_ke; 
     }
 
     const hasil = await Studio.find(filter);
@@ -187,7 +178,7 @@ export const SearchStudios = async (req, res) => {
   }
 };
 
-// Count studios by name (Group)
+
 export const CountbyStudioName = async (req, res) => {
   try {
     const { nama_tempat } = req.body;
@@ -201,7 +192,7 @@ export const CountbyStudioName = async (req, res) => {
     const result = await Studio.aggregate([
       {
         $match: {
-          nama_tempat: { $regex: nama_tempat, $options: "i" }, // case-insensitive
+          nama_tempat: { $regex: nama_tempat, $options: "i" }, 
         },
       },
       {
@@ -228,7 +219,6 @@ export const SearchAndCountByStudioNumber = async (req, res) => {
       return res.status(400).json({ message: "Nomor studio harus diisi" });
     }
 
-    // Search for studios with the given number
     const studios = await Studio.find({ studio_ke: studio_ke });
 
     if (studios.length === 0) {
@@ -237,7 +227,6 @@ export const SearchAndCountByStudioNumber = async (req, res) => {
       });
     }
 
-    // Count how many studios have this number
     const count = studios.length;
 
     res.status(200).json({
